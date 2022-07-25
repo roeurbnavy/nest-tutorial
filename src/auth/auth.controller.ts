@@ -1,3 +1,4 @@
+import { RegisterPayload } from './payloads/register.payload';
 import { LoginPayload } from './payloads/login.payload';
 import { UsersService } from './../users/users.service';
 import { AuthService } from './auth.service';
@@ -25,9 +26,7 @@ export class AuthController {
 
   @ApiBasicAuth()
   @Post('register')
-  async register(
-    @Body() payload: { username: string; password: string },
-  ): Promise<any> {
+  async register(@Body() payload: RegisterPayload): Promise<any> {
     return payload;
   }
 }

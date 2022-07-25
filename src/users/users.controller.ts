@@ -1,3 +1,4 @@
+import { UUIDType } from './../common/validator/FindOneUUID.validator';
 // import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
@@ -20,8 +21,8 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Successful ' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getUserById(@Param() id: number): Promise<any> {
-    return id;
-    // await this.userService.findUserById(id);
+  async getUserById(@Param('id') id: string): Promise<any> {
+    return await this.userService.findUserById(id);
+    // id;
   }
 }

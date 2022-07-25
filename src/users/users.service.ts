@@ -1,31 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { UserEntity } from './entity/user.entity';
+import { Injectable, Param } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UUIDType } from '@/common/validator/FindOneUUID.validator';
 
 export type User = any;
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'admin',
-      password: 'admin',
-    },
-    {
-      userId: 2,
-      username: 'user',
-      password: 'user',
-    },
-  ];
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
-  async getAll() {
-    return this.users;
+  async findUserById(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw 'User not found!';
+    }
+    return user;
   }
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username == username);
+  async getAll(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
   }
 
-  async findUserById(id: number): Promise<User> {
-    return this.users.find((it) => it.userId == id);
+  async findOne(username: string): Promise<UserEntity | null> {
+    const user = await this.userRepository.findOneBy({ username: username });
+    return user;
   }
 }

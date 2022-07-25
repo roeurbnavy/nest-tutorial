@@ -1,22 +1,53 @@
+import { TimeoutInterceptor } from './common/interceptor/timeout.interceptor';
+import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-// import { AuthzModule } from './authz/authz.module';
-// import { ConfigModule } from '@nestjs/config';
+import { getEnvPath } from './common/helper/env.helper';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
+import { join } from 'path';
+
+const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 @Module({
   imports: [
-    // AuthzModule,
+    ConfigModule.forRoot({ envFilePath, isGlobal: true }),
     AuthModule,
     UsersModule,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          type: config.get<string>('DB_TYPE'),
+          host: config.get<string>('DB_HOST'),
+          port: config.get<string>('DB_PORT'),
+          username: config.get<string>('DB_USERNAME'),
+          password: config.get<string>('DB_PASSWORD'),
+          database: config.get<string>('DB_DATABASE'),
+          entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+          subscribers: [__dirname + '../**/**/*.subscriber.{ts,js}'],
+          synchronize: config.get<string>('DB_SYNC'),
+          retryAttempts: 20,
+        } as TypeOrmModuleAsyncOptions;
+      },
+    }),
   ],
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TimeoutInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
   ],
 })
