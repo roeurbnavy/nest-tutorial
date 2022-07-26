@@ -10,6 +10,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Public } from 'src/common/decorator/public.decorator';
+import { ChangePasswordPayload } from './payloads/changePassword.payload';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -36,5 +37,16 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async register(@Body() payload: RegisterPayload): Promise<any> {
     return this.usersService.create(payload);
+  }
+
+  @Public()
+  @Post('changePassword')
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async changePassword(@Body() payload: ChangePasswordPayload): Promise<any> {
+    const user = this.usersService.changePassword(payload);
+
+    return user;
   }
 }

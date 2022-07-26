@@ -1,14 +1,19 @@
+import { UpdatePayload } from './payloads/update.payload';
 import { UserEntity } from './entity/user.entity';
 import {
+  BadRequestException,
   Body,
   Injectable,
   NotAcceptableException,
   Param,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UUIDType } from '@/common/validator/FindOneUUID.validator';
 import { RegisterPayload } from '@/auth/payloads/register.payload';
+import { Hash } from '@/util/Hash';
+import { ChangePasswordPayload } from '@/auth/payloads/changePassword.payload';
 
 export type User = any;
 
@@ -46,5 +51,43 @@ export class UsersService {
     }
 
     return this.userRepository.save(this.userRepository.create(payload));
+  }
+
+  async changePassword(payload: ChangePasswordPayload): Promise<any> {
+    const user = await this.findOne(payload.username);
+    if (!user || !Hash.compare(payload.currentPassword, user.password)) {
+      throw new UnauthorizedException('Invalid credential!');
+    }
+
+    await this.userRepository
+      .createQueryBuilder('users')
+      .update(UserEntity)
+      .set({ password: payload.password })
+      .where('username=:username', { username: payload.username })
+      .execute();
+    return user;
+  }
+
+  async update(id: string, payload: UpdatePayload): Promise<any> {
+    const user = await this.userRepository.findOneBy({ id: id });
+    const update = { ...user, ...payload };
+    delete update.password;
+    try {
+      return await this.userRepository.save(update);
+    } catch (error) {
+      throw new NotAcceptableException('Username Or Email is exist');
+    }
+  }
+
+  async delete(id: string) {
+    const user = await this.findUserById(id);
+    const deleted = await this.userRepository.delete(id);
+    if (deleted.affected == 1) {
+      return { message: `Deleted ${user.username} from records` };
+    } else {
+      throw new BadRequestException(
+        `Failed to delete a profile by the name of ${user.username}.`,
+      );
+    }
   }
 }
