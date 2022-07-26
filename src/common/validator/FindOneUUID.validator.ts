@@ -4,6 +4,6 @@ import { IsNotEmpty, IsUUID } from 'class-validator';
 export class UUIDType {
   @ApiProperty({ required: true })
   @IsNotEmpty()
-  @IsUUID()
+  // @IsUUID()
   id: string;
 }

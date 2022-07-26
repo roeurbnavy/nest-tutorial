@@ -3,7 +3,12 @@ import { LoginPayload } from './payloads/login.payload';
 import { UsersService } from './../users/users.service';
 import { AuthService } from './auth.service';
 import { Body, Controller, Get, Post, SetMetadata } from '@nestjs/common';
-import { ApiBasicAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBasicAuth,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Public } from 'src/common/decorator/public.decorator';
 
 @Controller('auth')
@@ -24,8 +29,11 @@ export class AuthController {
     return await this.authService.createToken(user);
   }
 
-  @ApiBasicAuth()
+  @Public()
   @Post('register')
+  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async register(@Body() payload: RegisterPayload): Promise<any> {
     return payload;
   }

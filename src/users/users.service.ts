@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   async findUserById(id: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id: id });
     if (!user) {
       throw 'User not found!';
     }
