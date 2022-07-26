@@ -1,8 +1,14 @@
 import { UserEntity } from './entity/user.entity';
-import { Injectable, Param } from '@nestjs/common';
+import {
+  Body,
+  Injectable,
+  NotAcceptableException,
+  Param,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UUIDType } from '@/common/validator/FindOneUUID.validator';
+import { RegisterPayload } from '@/auth/payloads/register.payload';
 
 export type User = any;
 
@@ -18,6 +24,7 @@ export class UsersService {
     if (!user) {
       throw 'User not found!';
     }
+    // const { password, ...result } = user;
     return user;
   }
 
@@ -28,5 +35,16 @@ export class UsersService {
   async findOne(username: string): Promise<UserEntity | null> {
     const user = await this.userRepository.findOneBy({ username: username });
     return user;
+  }
+
+  async create(payload: RegisterPayload) {
+    const user = await this.findOne(payload.username);
+    if (user) {
+      throw new NotAcceptableException(
+        'Admin with provided username already created.',
+      );
+    }
+
+    return this.userRepository.save(this.userRepository.create(payload));
   }
 }

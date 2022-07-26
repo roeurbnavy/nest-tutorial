@@ -1,13 +1,8 @@
 import { UUIDType } from './../common/validator/FindOneUUID.validator';
 // import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import {
-  ApiBasicAuth,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorator/public.decorator';
 
 @ApiTags('Users')
@@ -21,8 +16,7 @@ export class UsersController {
     return await this.userService.getAll();
   }
 
-  // @ApiBasicAuth('access-token')
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Successful ' })
   @ApiResponse({ status: 400, description: 'Bad Request' })

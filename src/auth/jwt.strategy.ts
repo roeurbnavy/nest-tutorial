@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from './../users/users.service';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     const user = await this.userService.findUserById(id);
-    // console.log('user validate', user);
+
     if (!user) {
       console.log('validate UnauthorizedException');
       throw new UnauthorizedException();
@@ -33,6 +33,5 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     // delete user.password;
     done(null, user);
-    // return user;
   }
 }
