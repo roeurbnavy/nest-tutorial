@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export class UpdatePayload {
+export class UserUpdateDTO {
   @ApiProperty({
     required: false,
   })

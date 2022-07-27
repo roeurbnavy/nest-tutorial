@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { PasswordTransformer } from '../password.transformer';
 import { AppRoles } from '@/common/enum/role.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity({
   name: 'users',
@@ -41,6 +42,7 @@ export class UserEntity {
   @DeleteDateColumn()
   deletedDate: Date;
 
+  @Exclude()
   @Column({
     name: 'password',
     length: 255,

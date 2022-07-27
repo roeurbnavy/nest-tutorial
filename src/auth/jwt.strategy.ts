@@ -32,6 +32,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     // delete user.password;
-    done(null, user);
+    done(null, user.toJson());
   }
 }

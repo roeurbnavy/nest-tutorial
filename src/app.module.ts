@@ -1,3 +1,4 @@
+import { RolesGuard } from './common/guard/roles.guard';
 import { TimeoutInterceptor } from './common/interceptor/timeout.interceptor';
 import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -27,8 +28,9 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
           username: config.get<string>('DB_USERNAME'),
           password: config.get<string>('DB_PASSWORD'),
           database: config.get<string>('DB_DATABASE'),
-          entities: [join(__dirname, '**', '*.entity.{ts,js}')],
-          subscribers: [__dirname + '../**/**/*.subscriber.{ts,js}'],
+          entities: [__dirname + '**/**/*.entity.{ts,js}'],
+          // [join(__dirname, '**', '*.entity.{ts,js}')] // Work,
+          subscribers: [__dirname + '**/**/*.subscriber.{ts,js}'],
           synchronize: config.get<string>('DB_SYNC'),
           retryAttempts: 20,
         } as TypeOrmModuleAsyncOptions;
@@ -40,6 +42,10 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     {
       provide: APP_INTERCEPTOR,

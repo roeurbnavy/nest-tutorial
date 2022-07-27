@@ -1,4 +1,4 @@
-import { UpdatePayload } from './payloads/update.payload';
+import { UserUpdateDTO } from './dto/update.dto';
 import { UserEntity } from './entity/user.entity';
 import {
   BadRequestException,
@@ -11,9 +11,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UUIDType } from '@/common/validator/FindOneUUID.validator';
-import { RegisterPayload } from '@/auth/payloads/register.payload';
+import { RegisterDTO } from '@/auth/dto/register.dto';
 import { Hash } from '@/util/Hash';
-import { ChangePasswordPayload } from '@/auth/payloads/changePassword.payload';
+import { ChangePasswordDTO } from '@/auth/dto/changePassword.dto';
 
 export type User = any;
 
@@ -37,13 +37,16 @@ export class UsersService {
     return await this.userRepository.find();
   }
 
-  async findOne(username: string): Promise<UserEntity | null> {
+  async findOneByUsername(username: string): Promise<UserEntity | null> {
     const user = await this.userRepository.findOneBy({ username: username });
+    if (!user) {
+      throw new UnauthorizedException('User not found!');
+    }
     return user;
   }
 
-  async create(payload: RegisterPayload) {
-    const user = await this.findOne(payload.username);
+  async create(payload: RegisterDTO) {
+    const user = await this.findOneByUsername(payload.username);
     if (user) {
       throw new NotAcceptableException(
         'Admin with provided username already created.',
@@ -53,8 +56,8 @@ export class UsersService {
     return this.userRepository.save(this.userRepository.create(payload));
   }
 
-  async changePassword(payload: ChangePasswordPayload): Promise<any> {
-    const user = await this.findOne(payload.username);
+  async changePassword(payload: ChangePasswordDTO): Promise<any> {
+    const user = await this.findOneByUsername(payload.username);
     if (!user || !Hash.compare(payload.currentPassword, user.password)) {
       throw new UnauthorizedException('Invalid credential!');
     }
@@ -68,7 +71,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, payload: UpdatePayload): Promise<any> {
+  async update(id: string, payload: UserUpdateDTO): Promise<any> {
     const user = await this.userRepository.findOneBy({ id: id });
     const update = { ...user, ...payload };
     delete update.password;

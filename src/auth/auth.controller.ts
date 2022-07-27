@@ -1,5 +1,5 @@
-import { RegisterPayload } from './payloads/register.payload';
-import { LoginPayload } from './payloads/login.payload';
+import { RegisterDTO } from './dto/register.dto';
+import { LoginDTO } from './dto/login.dto';
 import { UsersService } from './../users/users.service';
 import { AuthService } from './auth.service';
 import { Body, Controller, Get, Post, SetMetadata } from '@nestjs/common';
@@ -10,7 +10,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Public } from 'src/common/decorator/public.decorator';
-import { ChangePasswordPayload } from './payloads/changePassword.payload';
+import { ChangePasswordDTO } from './dto/changePassword.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -25,7 +25,7 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async login(@Body() payload: LoginPayload): Promise<any> {
+  async login(@Body() payload: LoginDTO): Promise<any> {
     const user = await this.authService.validateUser(payload);
     return await this.authService.createToken(user);
   }
@@ -35,7 +35,7 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async register(@Body() payload: RegisterPayload): Promise<any> {
+  async register(@Body() payload: RegisterDTO): Promise<any> {
     return this.usersService.create(payload);
   }
 
@@ -44,7 +44,7 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async changePassword(@Body() payload: ChangePasswordPayload): Promise<any> {
+  async changePassword(@Body() payload: ChangePasswordDTO): Promise<any> {
     const user = this.usersService.changePassword(payload);
 
     return user;

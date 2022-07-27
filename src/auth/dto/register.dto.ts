@@ -10,7 +10,7 @@ import {
 // import { SameAs } from '../../common/validator/same-as.validator';
 // import { Unique } from '../../common/validator/unique.validator';
 
-export class RegisterPayload {
+export class RegisterDTO {
   @ApiProperty({
     required: true,
   })
