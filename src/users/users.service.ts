@@ -39,14 +39,16 @@ export class UsersService {
 
   async findOneByUsername(username: string): Promise<UserEntity | null> {
     const user = await this.userRepository.findOneBy({ username: username });
-    if (!user) {
-      throw new UnauthorizedException('User not found!');
-    }
+    // if (!user) {
+    //   throw new UnauthorizedException('User not found!');
+    // }
     return user;
   }
 
   async create(payload: RegisterDTO) {
-    const user = await this.findOneByUsername(payload.username);
+    const user = await this.userRepository.findOneBy({
+      username: payload.username,
+    });
     if (user) {
       throw new NotAcceptableException(
         'Admin with provided username already created.',

@@ -42,7 +42,6 @@ export class UserEntity {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @Exclude()
   @Column({
     name: 'password',
     length: 255,
