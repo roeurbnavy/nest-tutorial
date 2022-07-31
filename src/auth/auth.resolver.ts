@@ -27,8 +27,6 @@ export class AuthResolver {
   @Public()
   @Mutation(() => UserEntity)
   async register(@Args('doc') doc: RegisterDTO): Promise<any> {
-    console.log('doc', doc);
-    // return 'done';
     return this.usersService.create(doc);
   }
 
