@@ -1,16 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
+@InputType()
 export class ChangePasswordDTO {
-  @ApiProperty({ required: true })
+  @Field()
   @IsNotEmpty()
   username: string;
 
-  @ApiProperty({ required: true })
+  @Field()
   @IsNotEmpty()
   currentPassword: string;
 
-  @ApiProperty({ required: true })
+  @Field()
   @IsNotEmpty()
   password: string;
 }

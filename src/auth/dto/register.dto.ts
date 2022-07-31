@@ -1,8 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { AppRoles } from '@/common/enum/role.enum';
+import { Field, InputType } from '@nestjs/graphql';
 import {
   IsAlphanumeric,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   Matches,
   MinLength,
 } from 'class-validator';
@@ -10,38 +12,35 @@ import {
 // import { SameAs } from '../../common/validator/same-as.validator';
 // import { Unique } from '../../common/validator/unique.validator';
 
+@InputType()
 export class RegisterDTO {
-  @ApiProperty({
-    required: true,
-  })
+  @Field()
   @IsAlphanumeric()
   @IsNotEmpty()
   // @Unique([UserEntity])
   username: string;
 
-  @ApiProperty({
-    required: true,
-  })
+  @Field()
   @IsEmail()
   @IsNotEmpty()
   // @Unique([UserEntity])
   email: string;
 
-  @ApiProperty({
-    required: true,
-  })
+  @Field(() => [String], { nullable: true })
+  @IsOptional()
+  roles?: AppRoles[];
+
+  @Field()
   @Matches(/^[a-zA-Z ]+$/)
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({
-    required: true,
-  })
+  @Field()
   @IsNotEmpty()
   @MinLength(5)
   password: string;
 
-  @ApiProperty({ required: true })
+  @Field()
   // @SameAs('password')
   passwordConfirmation: string;
 }

@@ -77,6 +77,7 @@ export class UsersService {
     const user = await this.userRepository.findOneBy({ id: id });
     const update = { ...user, ...payload };
     delete update.password;
+    // const {password,...doc} = update
     try {
       return await this.userRepository.save(update);
     } catch (error) {

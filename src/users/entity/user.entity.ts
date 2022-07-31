@@ -8,24 +8,30 @@ import {
 } from 'typeorm';
 import { PasswordTransformer } from '../password.transformer';
 import { AppRoles } from '@/common/enum/role.enum';
-import { Exclude } from 'class-transformer';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity({
   name: 'users',
 })
 export class UserEntity {
+  @Field()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Field()
   @Column({ length: 255, unique: true })
   username: string;
 
+  @Field()
   @Column({ type: 'text' })
   name: string;
 
+  @Field()
   @Column({ type: 'text', unique: true })
   email: string;
 
+  @Field(() => [String])
   @Column({
     type: 'simple-array',
     enum: AppRoles,
@@ -33,15 +39,19 @@ export class UserEntity {
   })
   roles: AppRoles[];
 
+  @Field()
   @CreateDateColumn()
   createdDate: Date;
 
+  @Field()
   @UpdateDateColumn()
   updatedDate: Date;
 
+  @Field()
   @DeleteDateColumn()
   deletedDate: Date;
 
+  @Field()
   @Column({
     name: 'password',
     length: 255,
