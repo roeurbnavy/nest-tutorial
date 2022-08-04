@@ -9,7 +9,7 @@ import {
   MinLength,
 } from 'class-validator';
 // import { UserEntity } from '../../user';
-import { SameAs } from '../../common/validator/same-as.validator';
+import { SameAs } from '../../../common/validator/same-as.validator';
 // import { Unique } from '../../common/validator/unique.validator';
 
 @InputType()

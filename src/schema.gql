@@ -26,17 +26,23 @@ type Author {
 }
 
 type Query {
-  whoAmI: UserEntity!
   getAll: [UserEntity!]!
   getUserById(id: String!): UserEntity!
+  whoAmI: UserEntity!
 }
 
 type Mutation {
+  update(id: String!, updateInput: UserUpdateDTO!): UserEntity!
+  deleted(id: String!): String!
   login(loginInput: LoginDTO!): Author!
   register(doc: RegisterDTO!): UserEntity!
   changePassword(userInput: ChangePasswordDTO!): UserEntity!
-  update(id: String!, updateInput: UserUpdateDTO!): UserEntity!
-  deleted(id: String!): String!
+}
+
+input UserUpdateDTO {
+  username: String!
+  name: String!
+  email: String!
 }
 
 input LoginDTO {
@@ -57,10 +63,4 @@ input ChangePasswordDTO {
   username: String!
   currentPassword: String!
   password: String!
-}
-
-input UserUpdateDTO {
-  username: String!
-  name: String!
-  email: String!
 }

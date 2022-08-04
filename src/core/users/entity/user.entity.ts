@@ -9,6 +9,7 @@ import {
 import { PasswordTransformer } from '../password.transformer';
 import { AppRoles } from '@/common/enum/role.enum';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Exclude } from 'class-transformer';
 
 @ObjectType()
 @Entity({

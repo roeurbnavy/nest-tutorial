@@ -1,24 +1,24 @@
 import { RolesGuard } from './common/guard/roles.guard';
 import { TimeoutInterceptor } from './common/interceptor/timeout.interceptor';
 import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtAuthGuard } from './core/auth/jwt-auth.guard';
 import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 import { getEnvPath } from './common/helper/env.helper';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { CoreModule } from './core';
+import { AppModules } from './modules';
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
-    AuthModule,
-    UsersModule,
+    ...CoreModule,
+    ...AppModules,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -30,8 +30,8 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
           username: config.get<string>('DB_USERNAME'),
           password: config.get<string>('DB_PASSWORD'),
           database: config.get<string>('DB_DATABASE'),
-          entities: [__dirname + '**/**/*.entity.{ts,js}'],
-          // [join(__dirname, '**', '*.entity.{ts,js}')] // Work,
+          entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+          // [__dirname + '**/**/*.entity.{ts,js}'], // work
           subscribers: [__dirname + '**/**/*.subscriber.{ts,js}'],
           synchronize: config.get<string>('DB_SYNC'),
           retryAttempts: 20,

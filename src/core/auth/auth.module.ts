@@ -1,11 +1,11 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './../auth/jwt.strategy';
+import { JwtStrategy } from './jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { UsersModule } from 'src/users/users.module';
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -18,7 +18,6 @@ import { AuthResolver } from './auth.resolver';
       useFactory: async (config: ConfigService) => ({
         secret: config.get('JWT_KEY'),
         signOptions: {
-          // expiresIn: config.get('JWT_EXPIRES')
           ...(config.get<string>('JWT_EXPIRES')
             ? {
                 expiresIn: Number(config.get('JWT_EXPIRES')),

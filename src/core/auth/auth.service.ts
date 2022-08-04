@@ -23,7 +23,7 @@ export class AuthService {
     return payload;
   }
 
-  async validateUser(payload: LoginDTO): Promise<any> {
+  async validateUser(payload: LoginDTO): Promise<UserEntity> {
     const user = await this.userService.findOneByUsername(payload.username);
     if (!user || !Hash.compare(payload.password, user.password)) {
       throw new UnauthorizedException('Username or Password is not correct!');

@@ -2,18 +2,15 @@ import { UserUpdateDTO } from './dto/update.dto';
 import { UserEntity } from './entity/user.entity';
 import {
   BadRequestException,
-  Body,
   Injectable,
   NotAcceptableException,
-  Param,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UUIDType } from '@/common/validator/FindOneUUID.validator';
-import { RegisterDTO } from '@/auth/dto/register.dto';
+import { RegisterDTO } from '@/core/auth/dto/register.dto';
 import { Hash } from '@/util/Hash';
-import { ChangePasswordDTO } from '@/auth/dto/changePassword.dto';
+import { ChangePasswordDTO } from '@/core/auth/dto/changePassword.dto';
 
 export type User = any;
 
@@ -37,11 +34,9 @@ export class UsersService {
     return await this.userRepository.find();
   }
 
-  async findOneByUsername(username: string): Promise<UserEntity | null> {
+  async findOneByUsername(username: string) {
     const user = await this.userRepository.findOneBy({ username: username });
-    // if (!user) {
-    //   throw new UnauthorizedException('User not found!');
-    // }
+
     return user;
   }
 
