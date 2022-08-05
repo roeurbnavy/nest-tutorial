@@ -17,8 +17,8 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
-    ...CoreModule,
-    ...AppModules,
+    CoreModule,
+    AppModules,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,7 +31,6 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
           password: config.get<string>('DB_PASSWORD'),
           database: config.get<string>('DB_DATABASE'),
           entities: [join(__dirname, '**', '*.entity.{ts,js}')],
-          // [__dirname + '**/**/*.entity.{ts,js}'], // work
           subscribers: [__dirname + '**/**/*.subscriber.{ts,js}'],
           synchronize: config.get<string>('DB_SYNC'),
           retryAttempts: 20,

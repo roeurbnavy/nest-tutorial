@@ -1,3 +1,7 @@
-export const AppResolve = [];
+import { Module } from '@nestjs/common';
 
-export const AppModules = [];
+@Module({
+  imports: [],
+  providers: [],
+})
+export class AppModules {}
