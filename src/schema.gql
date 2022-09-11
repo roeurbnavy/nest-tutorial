@@ -25,10 +25,61 @@ type Author {
   user: UserEntity!
 }
 
+type AuthorBook {
+  id: String!
+  name: String!
+  phone: String
+  email: String
+  book: [Book!]!
+}
+
+type Reader {
+  id: String!
+  name: String!
+  phone: String
+  email: String
+  borrow: [Borrow!]!
+}
+
+type Borrow {
+  id: String!
+  tranDate: DateTime!
+  returnDate: DateTime!
+  note: String
+  reader: Reader!
+  readerId: String!
+  details: [BorrowDetails!]!
+}
+
+type BorrowDetails {
+  id: String!
+  borrow: Borrow!
+  parentId: String!
+  books: Book!
+  bookId: String!
+}
+
+type Book {
+  id: String!
+  title: String!
+  author: AuthorBook!
+  authorId: String!
+  pubYear: DateTime
+  borrow: [BorrowDetails!]!
+}
+
 type Query {
   getAll: [UserEntity!]!
   getUserById(id: String!): UserEntity!
   whoAmI: UserEntity!
+  books: [Book!]!
+  book(id: String!): Book!
+  readers: [Reader!]!
+  reader(id: String!): Reader!
+  authorBooks: [AuthorBook!]!
+  authorBook(id: String!): AuthorBook!
+  borrows: [Borrow!]!
+  borrow(id: String!): Borrow!
 }
 
 type Mutation {
@@ -37,6 +88,18 @@ type Mutation {
   login(loginInput: LoginDTO!): Author!
   register(doc: RegisterDTO!): UserEntity!
   changePassword(userInput: ChangePasswordDTO!): UserEntity!
+  createBook(createBookInput: CreateBookInput!): Book!
+  updateBook(updateBookInput: UpdateBookInput!): Book!
+  removeBook(id: String!): Book!
+  createReader(createReaderInput: CreateReaderInput!): Reader!
+  updateReader(updateReaderInput: UpdateReaderInput!): Reader!
+  removeReader(id: String!): Reader!
+  createAuthorBook(createAuthorBookInput: CreateAuthorBookInput!): AuthorBook!
+  updateAuthorBook(updateAuthorBookInput: UpdateAuthorBookInput!): AuthorBook!
+  removeAuthorBook(id: Int!): AuthorBook!
+  createBorrow(createBorrowInput: CreateBorrowInput!): Borrow!
+  updateBorrow(updateBorrowInput: UpdateBorrowInput!): Borrow!
+  removeBorrow(id: String!): Borrow!
 }
 
 input UserUpdateDTO {
@@ -63,4 +126,68 @@ input ChangePasswordDTO {
   username: String!
   currentPassword: String!
   password: String!
+}
+
+input CreateBookInput {
+  title: String!
+  authorId: String!
+  pubYear: DateTime
+}
+
+input UpdateBookInput {
+  title: String
+  authorId: String
+  pubYear: DateTime
+  id: String!
+}
+
+input CreateReaderInput {
+  name: String!
+  phone: String
+  email: String
+}
+
+input UpdateReaderInput {
+  name: String
+  phone: String
+  email: String
+  id: String!
+}
+
+input CreateAuthorBookInput {
+  name: String!
+  phone: String
+  email: String
+}
+
+input UpdateAuthorBookInput {
+  name: String
+  phone: String
+  email: String
+  id: String!
+}
+
+input CreateBorrowInput {
+  doc: BorrowInput!
+  details: [BorrowDetailInput!]!
+}
+
+input BorrowInput {
+  """Borrow date"""
+  tranDate: DateTime!
+
+  """Return date"""
+  returnDate: DateTime!
+  note: String
+  readerId: String!
+}
+
+input BorrowDetailInput {
+  bookId: String!
+}
+
+input UpdateBorrowInput {
+  doc: BorrowInput
+  details: [BorrowDetailInput!]
+  id: String!
 }

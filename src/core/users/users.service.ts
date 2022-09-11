@@ -49,8 +49,8 @@ export class UsersService {
         'Admin with provided username already created.',
       );
     }
-
-    return this.userRepository.save(this.userRepository.create(payload));
+    const doc = this.userRepository.create(payload);
+    return this.userRepository.save(doc);
   }
 
   async changePassword(payload: ChangePasswordDTO): Promise<any> {

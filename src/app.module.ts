@@ -12,6 +12,10 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { CoreModule } from './core';
 import { AppModules } from './modules';
+import { BooksModule } from './modules/books/books.module';
+import { ReadersModule } from './modules/readers/readers.module';
+import { AuthorBooksModule } from './modules/author-books/author-books.module';
+import { BorrowsModule } from './modules/borrows/borrows.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 @Module({
@@ -41,6 +45,10 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+    BooksModule,
+    ReadersModule,
+    AuthorBooksModule,
+    BorrowsModule,
   ],
   controllers: [],
   providers: [
